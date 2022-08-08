@@ -8,7 +8,8 @@ Setup
 
 Services
 - http://localhost:3000/
-	- /stream/start
-	- /stream/stop
-	- /stream/status
-	- /stream/install
+	- [GET]	/stream/start
+	- [GET]	/stream/stop
+	- [GET]	/stream/status
+	- [GET]	/stream/install
+	- [GET]	/stream/catchup?env={main|beta|test}

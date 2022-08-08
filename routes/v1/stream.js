@@ -1,6 +1,7 @@
 const express = require('express');
 var os = require('os');
 const { spawn } = require("child_process");
+const { CATCHUP_ENV }  = require('../../utils/constants');
 
 const router = express.Router();
 
@@ -15,7 +16,7 @@ router.use((req, res, next) => {
 });
 
 router.get('/start', (req, res) => {
-    const cmd = spawn(`./${os.platform()}/start.sh`);
+    const cmd = spawn(`./common-scripts/start.sh`);
     cmd.on('error', (error) => {
         console.log(`error: ${error.message}`);
         res.write(error.message)
@@ -57,7 +58,7 @@ router.get('/status', (req, res) => {
 });
 
 router.get('/stop', (req, res) => {
-    const cmd = spawn(`./${os.platform()}/stop.sh`);
+    const cmd = spawn(`./common-scripts/stop.sh`);
     
     cmd.on('error', (error) => {
         console.log(`error: ${error.message}`);
@@ -108,8 +109,10 @@ router.get('/install', (req, res) => {
 
 router.get('/catchup', (req, res) => {
     console.log('BEGIN CATCHUP');
-    // console.log("query params: ", req.query)
-    const cmd = spawn(`./${os.platform()}/catchup.sh`, ['-l']);
+    let inp = req.query.env ? req.query.env.toUpperCase() : '';
+    const catchup_env = inp === "BETA" ? CATCHUP_ENV.BETANET : inp === "TEST" ? CATCHUP_ENV.TESTNET : CATCHUP_ENV.DEFAULT;
+    
+    const cmd = spawn(`./common-scripts/catchup.sh`, [catchup_env]);
     
     cmd.on('error', (error) => {
         console.log(`error: ${error.message}`);
